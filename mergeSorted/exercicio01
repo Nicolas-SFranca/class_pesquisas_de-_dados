@@ -28,5 +28,5 @@ def merge(left_lado, right_lado):
         p2 += 1
     return temp
 
-ordenar = [34, 44, 22, 25, 18, 11, 15]
+ordenar = [34, 44,44, 22, 25, 18, 11, 15]
 print(merge_sort(ordenar))
