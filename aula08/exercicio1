@@ -1,0 +1,116 @@
+import time
+import random
+import math
+
+# Busca Binária Iterativa
+def busca_binaria_iterativa(lista, alvo):
+    esquerda, direita = 0, len(lista) - 1
+    
+    while esquerda <= direita:
+        meio = (esquerda + direita) // 2
+        
+        if lista[meio] == alvo:
+            return meio
+        elif lista[meio] < alvo:
+            esquerda = meio + 1
+        else:
+            direita = meio - 1
+            
+    return -1
+
+# Busca Binária Recursiva
+def busca_binaria_recursiva(lista, alvo, esquerda, direita):
+    if esquerda > direita:
+        return -1
+    
+    meio = (esquerda + direita) // 2
+    
+    if lista[meio] == alvo:
+        return meio
+    elif lista[meio] < alvo:
+        return busca_binaria_recursiva(lista, alvo, meio + 1, direita)
+    else:
+        return busca_binaria_recursiva(lista, alvo, esquerda, meio - 1)
+
+# Pesquisa por Salto
+def pesquisa_por_salto(lista, alvo):
+    n = len(lista)
+    salto = int(math.sqrt(n))
+    prev = 0
+    
+    while lista[min(salto, n)-1] < alvo:
+        prev = salto
+        salto += int(math.sqrt(n))
+        if prev >= n:
+            return -1
+    
+    while lista[prev] < alvo:
+        prev += 1
+        if prev == min(salto, n):
+            return -1
+    
+    if lista[prev] == alvo:
+        return prev
+    
+    return -1
+
+
+def pesquisa_fibonacci(lista, alvo):
+    fib_m2 = 0  
+    fib_m1 = 1  
+    fib_m = fib_m2 + fib_m1  
+
+    while fib_m < len(lista):
+        fib_m2 = fib_m1
+        fib_m1 = fib_m
+        fib_m = fib_m2 + fib_m1
+
+    offset = -1
+
+    while fib_m > 1:
+        i = min(offset + fib_m2, len(lista) - 1)
+
+        if lista[i] < alvo:
+            fib_m = fib_m1
+            fib_m1 = fib_m2
+            fib_m2 = fib_m - fib_m1
+            offset = i
+        elif lista[i] > alvo:
+            fib_m = fib_m2
+            fib_m1 -= fib_m2
+            fib_m2 = fib_m - fib_m1
+        else:
+            return i
+
+    if fib_m1 and lista[offset + 1] == alvo:
+        return offset + 1
+
+    return -1
+
+# Teste de Desempenho
+def teste_desempenho():
+    lista = sorted(random.sample(range(1, 100000), 10000))  # 10k números aleatórios
+    alvo = random.choice(lista)  # Escolhe um alvo aleatório da lista
+
+    # Teste Busca Binária Iterativa
+    start_time = time.time()
+    resultado_iterativo = busca_binaria_iterativa(lista, alvo)
+    print(f"Resultado da busca iterativa: {resultado_iterativo}, Tempo: {time.time() - start_time:.6f} segundos")
+
+    # Teste Busca Binária Recursiva
+    start_time = time.time()
+    resultado_recursivo = busca_binaria_recursiva(lista, alvo, 0, len(lista) - 1)
+    print(f"Resultado da busca recursiva: {resultado_recursivo}, Tempo: {time.time() - start_time:.6f} segundos")
+
+    # Teste Pesquisa por Salto
+    start_time = time.time()
+    resultado_salto = pesquisa_por_salto(lista, alvo)
+    print(f"Resultado da pesquisa por salto: {resultado_salto}, Tempo: {time.time() - start_time:.6f} segundos")
+
+    # Teste Pesquisa Fibonacci
+    start_time = time.time()
+    resultado_fibonacci = pesquisa_fibonacci(lista, alvo)
+    print(f"Resultado da pesquisa Fibonacci: {resultado_fibonacci}, Tempo: {time.time() - start_time:.6f} segundos")
+
+if __name__ == "__main__":
+    teste_desempenho()
