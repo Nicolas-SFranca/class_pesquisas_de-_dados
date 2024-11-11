@@ -1,0 +1,103 @@
+
+class Node:
+    def __init__(self, valor):
+        self.valor = valor
+        self.esquerda = None
+        self.direita = None
+
+class ABB:
+    def __init__(self):
+        self.raiz = None
+
+    def inserir(self, valor):
+        if self.raiz is None:
+            self.raiz = Node(valor)
+        else:
+            self._inserir_recursivo(self.raiz, valor)
+
+    def _inserir_recursivo(self, node, valor):
+        if valor < node.valor:
+            if node.esquerda is None:
+                node.esquerda = Node(valor)
+            else:
+                self._inserir_recursivo(node.esquerda, valor)
+        else:
+            if node.direita is None:
+                node.direita = Node(valor)
+            else:
+                self._inserir_recursivo(node.direita, valor)
+
+    def imprimir_pre_ordem(self, node):
+        if node:
+            print(node.valor, end=' ')
+            self.imprimir_pre_ordem(node.esquerda)
+            self.imprimir_pre_ordem(node.direita)
+
+    def imprimir_pos_ordem(self, node):
+        if node:
+            self.imprimir_pos_ordem(node.esquerda)
+            self.imprimir_pos_ordem(node.direita)
+            print(node.valor, end=' ')
+
+    def imprimir_ordem_simetrica(self, node):
+        if node:
+            self.imprimir_ordem_simetrica(node.esquerda)
+            print(node.valor, end=' ')
+            self.imprimir_ordem_simetrica(node.direita)
+
+    def buscar(self, valor):
+        return self._buscar_recursivo(self.raiz, valor)
+
+    def _buscar_recursivo(self, node, valor):
+        if node is None or node.valor == valor:
+            return node
+        if valor < node.valor:
+            return self._buscar_recursivo(node.esquerda, valor)
+        return self._buscar_recursivo(node.direita, valor)
+
+    def remover(self, valor):
+        self.raiz = self._remover_recursivo(self.raiz, valor)
+
+    def _remover_recursivo(self, node, valor):
+        if node is None:
+            return node
+        if valor < node.valor:
+            node.esquerda = self._remover_recursivo(node.esquerda, valor)
+        elif valor > node.valor:
+            node.direita = self._remover_recursivo(node.direita, valor)
+        else:
+            if node.esquerda is None:
+                return node.direita
+            elif node.direita is None:
+                return node.esquerda
+            temp = self._minimo(node.direita)
+            node.valor = temp.valor
+            node.direita = self._remover_recursivo(node.direita, temp.valor)
+        return node
+
+    def _minimo(self, node):
+        current = node
+        while current.esquerda is not None:
+            current = current.esquerda
+        return current
+
+abb = ABB()
+abb.inserir(5)
+abb.inserir(10)
+abb.inserir(15)
+abb.inserir(3)
+abb.inserir(7)
+
+print("Impressão em pré-ordem:")
+abb.imprimir_pre_ordem(abb.raiz)
+print("\nImpressão em ordem simétrica:")
+abb.imprimir_ordem_simetrica(abb.raiz)
+print("\nImpressão em pós-ordem:")
+abb.imprimir_pos_ordem(abb.raiz)
+
+resultado = abb.buscar(7)
+print("\nBusca pelo valor 7:", "Encontrado" if resultado else "Não encontrado")
+
+abb.remover(5)
+print("\nImpressão em ordem simétrica após remover 5:")
+abb.imprimir_ordem_simetrica(abb.raiz)
